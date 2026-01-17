@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle for Moscow</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Battle for Moscow</h1>
+            <p class="subtitle">Operation Typhoon, October-December 1941</p>
+        </header>
+
+        <div class="game-layout">
+            <div class="sidebar">
+                <div class="info-panel">
+                    <h2>Game Status</h2>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <span class="label">Turn:</span>
+                            <span id="turn-display">-</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">Phase:</span>
+                            <span id="phase-display">-</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">Active Player:</span>
+                            <span id="player-display">-</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">Mud:</span>
+                            <span id="mud-display">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="new-game-btn" class="btn btn-primary">New Game</button>
+                    <button id="advance-phase-btn" class="btn btn-secondary">Advance Phase</button>
+                </div>
+
+                <div class="unit-info">
+                    <h3>Selected Unit</h3>
+                    <div id="unit-details">
+                        <p class="placeholder">Select a unit on the map</p>
+                    </div>
+                </div>
+
+                <div class="log-panel">
+                    <h3>Game Log</h3>
+                    <div id="game-log"></div>
+                </div>
+            </div>
+
+            <div class="map-container">
+                <svg id="game-map" width="1200" height="800"></svg>
+            </div>
+        </div>
+    </div>
+
+    <script src="hex.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
