@@ -1,0 +1,14 @@
+[package]
+name = "mcp-player"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+backend = { path = "../backend" }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+reqwest = { version = "0.12", features = ["json"] }
+toml = "0.8"
+anyhow = "1.0"
+async-trait = "0.1"
