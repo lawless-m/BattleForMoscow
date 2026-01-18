@@ -1,0 +1,250 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a1a2e;
+    color: #eee;
+}
+
+.container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+.game-layout {
+    display: flex;
+    gap: 20px;
+}
+
+.sidebar {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-panel, .controls, .unit-info, .log-panel {
+    background: #16213e;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+h2, h3 {
+    margin-bottom: 15px;
+    color: #667eea;
+}
+
+.status-grid {
+    display: grid;
+    gap: 10px;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    background: #0f1922;
+    border-radius: 5px;
+}
+
+.label {
+    font-weight: 600;
+    color: #aaa;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #2ecc71;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #27ae60;
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.unit-info {
+    min-height: 150px;
+}
+
+#unit-details {
+    font-size: 0.9em;
+}
+
+.placeholder {
+    color: #666;
+    font-style: italic;
+}
+
+.log-panel {
+    flex: 1;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#game-log {
+    font-size: 0.85em;
+}
+
+.log-entry {
+    padding: 8px;
+    margin-bottom: 5px;
+    background: #0f1922;
+    border-radius: 5px;
+    border-left: 3px solid #667eea;
+}
+
+.map-container {
+    flex: 1;
+    background: #16213e;
+    border-radius: 10px;
+    padding: 20px;
+    overflow: auto;
+}
+
+#game-map {
+    display: block;
+    margin: 0 auto;
+}
+
+/* Hex styling */
+.hex {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.hex:hover {
+    opacity: 0.8;
+}
+
+.hex-clear {
+    fill: #8fbc8f;
+    stroke: #2f4f2f;
+    stroke-width: 2;
+}
+
+.hex-forest {
+    fill: #228b22;
+    stroke: #1a5a1a;
+    stroke-width: 2;
+}
+
+.hex-selected {
+    stroke: #ffd700 !important;
+    stroke-width: 4 !important;
+}
+
+.hex-valid-move {
+    fill: rgba(46, 204, 113, 0.3);
+    stroke: #27ae60;
+    stroke-width: 3;
+}
+
+.unit {
+    cursor: pointer;
+}
+
+.unit-german {
+    fill: #666;
+    stroke: #333;
+    stroke-width: 2;
+}
+
+.unit-soviet {
+    fill: #c41e3a;
+    stroke: #8b0000;
+    stroke-width: 2;
+}
+
+.unit-text {
+    fill: white;
+    font-weight: bold;
+    font-size: 12px;
+    text-anchor: middle;
+    pointer-events: none;
+}
+
+.city-marker {
+    fill: #ffd700;
+    stroke: #b8860b;
+    stroke-width: 2;
+}
+
+.city-name {
+    fill: white;
+    font-weight: bold;
+    font-size: 11px;
+    text-anchor: middle;
+}
+
+.fortification {
+    fill: none;
+    stroke: #888;
+    stroke-width: 3;
+    stroke-dasharray: 5,5;
+}
+
+.river {
+    stroke: #4169e1;
+    stroke-width: 3;
+}
+
+.rail {
+    stroke: #696969;
+    stroke-width: 2;
+    stroke-dasharray: 10,5;
+}

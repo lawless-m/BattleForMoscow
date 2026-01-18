@@ -1,0 +1,54 @@
+{
+  "hexes": [
+    {
+      "q": 0,
+      "r": 0,
+      "terrain": "clear",
+      "city": null,
+      "fortification": false,
+      "rail": false,
+      "river_edges": [],
+      "setup": "german"
+    },
+    {
+      "q": 1,
+      "r": 0,
+      "terrain": "clear",
+      "city": null,
+      "fortification": false,
+      "rail": true,
+      "river_edges": [],
+      "setup": null
+    },
+    {
+      "q": 2,
+      "r": 0,
+      "terrain": "forest",
+      "city": null,
+      "fortification": false,
+      "rail": true,
+      "river_edges": ["W"],
+      "setup": null
+    },
+    {
+      "q": 3,
+      "r": 0,
+      "terrain": "clear",
+      "city": {"name": "Moscow", "is_moscow": true},
+      "fortification": false,
+      "rail": true,
+      "river_edges": [],
+      "setup": "soviet"
+    }
+  ],
+  "map_bounds": {
+    "min_q": 0,
+    "max_q": 3,
+    "min_r": 0,
+    "max_r": 0
+  },
+  "edges": {
+    "west": "german_communication",
+    "east": "soviet_communication"
+  }
+}
