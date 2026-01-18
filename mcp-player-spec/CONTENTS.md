@@ -17,21 +17,25 @@ An MCP (Model Context Protocol) server that enables LLMs to play Battle for Mosc
 This crate lives alongside the existing game engine:
 
 ```
-battle-for-moscow/
+BattleForMoscow/
 ├── Cargo.toml              # workspace root
-├── backend/                # existing game engine crate
+├── backend/                # game engine crate
 │   ├── Cargo.toml
 │   └── src/
-├── frontend/               # existing web UI
+├── static/                 # web UI
 ├── mcp-player/             # THIS CRATE
 │   ├── Cargo.toml
 │   └── src/
-└── data/
-    ├── map.json
-    └── units.json
+│       ├── game/           # game client and narrator
+│       ├── mcp/            # MCP protocol implementation
+│       └── text/           # text mode interface
+├── data/
+│   ├── map.json
+│   └── units.json
+├── bfm-project/            # game specification documents
+├── mcp-player-spec/        # this specification
+└── text-mode-spec/         # text mode specification
 ```
-
-Update the root `Cargo.toml` to include `mcp-player` in the workspace members.
 
 ## Technology Stack
 
@@ -95,19 +99,23 @@ Key principles:
 
 ## Usage
 
-Once built:
+The mcp-player crate supports two modes:
 
 ```bash
 # From repo root — start the game server (separate terminal)
 cargo run -p backend
 
-# Start MCP server
+# Start in text mode (default, interactive terminal)
 cargo run -p mcp-player
+cargo run -p mcp-player -- --mode text
+
+# Start in MCP mode (for AI assistants)
+cargo run -p mcp-player -- --mode mcp
 
 # Connect via Claude Desktop or other MCP client
 ```
 
-Configure in Claude Desktop's MCP settings to point at this server.
+For MCP mode, configure in Claude Desktop's MCP settings to point at this server with `--mode mcp`.
 
 ## Shared Types
 

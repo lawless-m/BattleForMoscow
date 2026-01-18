@@ -1,8 +1,10 @@
-# Battle for Moscow — Text Mode Addition
+# Battle for Moscow — Text Mode Specification
+
+> **Status: IMPLEMENTED** - This is the original specification document. Text mode is now implemented in `mcp-player/src/text/`.
 
 ## Overview
 
-Add a text-based command interface to the existing mcp-player crate. This provides:
+This specification describes the text-based command interface added to the mcp-player crate. It provides:
 
 - Terminal gameplay for humans
 - Fair interface for LLM battles (any model)
