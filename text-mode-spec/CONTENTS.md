@@ -1,8 +1,8 @@
-# Text Mode Addition for mcp-player
+# Text Mode for mcp-player
 
-## What This Is
+## Status: IMPLEMENTED
 
-A spec for adding text-based terminal gameplay to the existing `mcp-player` crate. This doesn't replace the MCP functionality — it adds a second mode.
+Text mode has been successfully implemented in the `mcp-player` crate. This document serves as the original specification.
 
 ## Files
 

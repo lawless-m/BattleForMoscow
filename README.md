@@ -34,14 +34,18 @@ BattleForMoscow/
 │   └── Cargo.toml
 ├── mcp-player/           # MCP server for LLM gameplay
 │   ├── src/
-│   │   ├── main.rs       # MCP server entry point
+│   │   ├── main.rs       # Entry point with mode selection
 │   │   ├── config.rs     # Configuration loading
 │   │   ├── game/         # Game client and narrator
 │   │   │   ├── client.rs # HTTP client for game API
 │   │   │   └── narrator.rs # State to text conversion
-│   │   └── mcp/          # MCP protocol implementation
-│   │       ├── server.rs # JSON-RPC server
-│   │       └── tools.rs  # MCP tools
+│   │   ├── mcp/          # MCP protocol implementation
+│   │   │   ├── server.rs # JSON-RPC server
+│   │   │   └── tools.rs  # MCP tools
+│   │   └── text/         # Text mode interface
+│   │       ├── repl.rs   # REPL loop
+│   │       ├── commands.rs # Command parsing
+│   │       └── prompts.rs # Phase-specific prompts
 │   └── Cargo.toml
 ├── data/
 │   ├── units.json        # Unit roster (39 units)
@@ -51,16 +55,19 @@ BattleForMoscow/
 │   ├── style.css         # Styling
 │   ├── hex.js            # Hex rendering utilities
 │   └── game.js           # Game controller
-├── bfm-project/          # Specification documents
+├── bfm-project/          # Game specification documents
 │   ├── SPEC.md           # Technical specification
 │   ├── RULES.md          # Game rules
 │   ├── UNITS.md          # Unit data
 │   ├── MAPDATA.md        # Map transcription guide
 │   └── CONTENTS.md       # Project overview
-├── mcp-bfm-player/       # MCP server specification
+├── mcp-player-spec/      # MCP server specification
 │   ├── SPEC.md           # MCP server specification
 │   ├── CONTENTS.md       # MCP project overview
 │   └── NARRATOR_EXAMPLES.md # Narrator formatting examples
+├── text-mode-spec/       # Text mode specification
+│   ├── TEXT_MODE.md      # Text mode interface spec
+│   └── CONTENTS.md       # Text mode overview
 ├── config.example.toml   # MCP server configuration template
 └── Cargo.toml            # Workspace manifest
 ```
@@ -89,9 +96,22 @@ BattleForMoscow/
    - Click a highlighted hex to move
    - Use "Advance Phase" to progress through turns
 
-### Running with MCP (LLM Gameplay)
+### Running the Player Interface (Terminal & AI)
 
-The MCP (Model Context Protocol) server allows AI assistants like Claude to play Battle for Moscow.
+The `mcp-player` crate provides two interfaces for playing Battle for Moscow:
+
+**Text Mode (Default)** - Interactive terminal interface:
+```bash
+cargo run -p mcp-player          # Uses text mode by default
+cargo run -p mcp-player -- --mode text
+```
+
+**MCP Mode** - For AI assistants like Claude:
+```bash
+cargo run -p mcp-player -- --mode mcp
+```
+
+#### Setting up MCP Mode:
 
 1. **Configure the MCP server:**
    ```bash
@@ -106,12 +126,12 @@ The MCP (Model Context Protocol) server allows AI assistants like Claude to play
 
 3. **In a separate terminal, start the MCP server:**
    ```bash
-   cargo run -p mcp-player
+   cargo run -p mcp-player -- --mode mcp
    ```
 
 4. **Connect Claude Desktop or another MCP client:**
    - Add MCP server configuration to your MCP client
-   - Point it to the `mcp-player` binary
+   - Point it to the `mcp-player` binary with `--mode mcp`
    - The LLM can now play the game using natural language
 
 **Available MCP Tools:**
