@@ -14,20 +14,35 @@ This is a complete digital implementation of the 1986 board wargame, featuring:
 
 ## Project Structure
 
+This is a Cargo workspace with two main crates:
+
 ```
 BattleForMoscow/
-├── src/
-│   ├── main.rs           # Server entry point
-│   ├── api.rs            # REST API endpoints
-│   ├── hex.rs            # Hex geometry (axial coordinates)
-│   ├── map.rs            # Map data structures
-│   ├── unit.rs           # Unit definitions and state
-│   ├── game_state.rs     # Turn/phase management
-│   ├── zoc.rs            # Zone of Control calculations
-│   ├── movement.rs       # Movement validation and pathfinding
-│   ├── combat.rs         # Combat Results Table implementation
-│   ├── replacement.rs    # Replacement logic
-│   └── retreat.rs        # Retreat mechanics
+├── backend/              # Game engine crate
+│   ├── src/
+│   │   ├── main.rs       # HTTP server entry point
+│   │   ├── api.rs        # REST API endpoints
+│   │   ├── hex.rs        # Hex geometry (axial coordinates)
+│   │   ├── map.rs        # Map data structures
+│   │   ├── unit.rs       # Unit definitions and state
+│   │   ├── game_state.rs # Turn/phase management
+│   │   ├── zoc.rs        # Zone of Control calculations
+│   │   ├── movement.rs   # Movement validation and pathfinding
+│   │   ├── combat.rs     # Combat Results Table implementation
+│   │   ├── replacement.rs# Replacement logic
+│   │   └── retreat.rs    # Retreat mechanics
+│   └── Cargo.toml
+├── mcp-player/           # MCP server for LLM gameplay
+│   ├── src/
+│   │   ├── main.rs       # MCP server entry point
+│   │   ├── config.rs     # Configuration loading
+│   │   ├── game/         # Game client and narrator
+│   │   │   ├── client.rs # HTTP client for game API
+│   │   │   └── narrator.rs # State to text conversion
+│   │   └── mcp/          # MCP protocol implementation
+│   │       ├── server.rs # JSON-RPC server
+│   │       └── tools.rs  # MCP tools
+│   └── Cargo.toml
 ├── data/
 │   ├── units.json        # Unit roster (39 units)
 │   └── map.json          # Map data (placeholder - needs real map)
@@ -36,12 +51,18 @@ BattleForMoscow/
 │   ├── style.css         # Styling
 │   ├── hex.js            # Hex rendering utilities
 │   └── game.js           # Game controller
-└── bfm-project/          # Specification documents
-    ├── SPEC.md           # Technical specification
-    ├── RULES.md          # Game rules
-    ├── UNITS.md          # Unit data
-    ├── MAPDATA.md        # Map transcription guide
-    └── CONTENTS.md       # Project overview
+├── bfm-project/          # Specification documents
+│   ├── SPEC.md           # Technical specification
+│   ├── RULES.md          # Game rules
+│   ├── UNITS.md          # Unit data
+│   ├── MAPDATA.md        # Map transcription guide
+│   └── CONTENTS.md       # Project overview
+├── mcp-bfm-player/       # MCP server specification
+│   ├── SPEC.md           # MCP server specification
+│   ├── CONTENTS.md       # MCP project overview
+│   └── NARRATOR_EXAMPLES.md # Narrator formatting examples
+├── config.example.toml   # MCP server configuration template
+└── Cargo.toml            # Workspace manifest
 ```
 
 ## Getting Started
@@ -51,11 +72,11 @@ BattleForMoscow/
 - Rust (latest stable)
 - A web browser
 
-### Running the Game
+### Running the Game (Web UI)
 
-1. **Build and run the server:**
+1. **Build and run the backend server:**
    ```bash
-   cargo run
+   cargo run -p backend
    ```
 
 2. **Open in browser:**
@@ -67,6 +88,45 @@ BattleForMoscow/
    - Valid moves are highlighted in green
    - Click a highlighted hex to move
    - Use "Advance Phase" to progress through turns
+
+### Running with MCP (LLM Gameplay)
+
+The MCP (Model Context Protocol) server allows AI assistants like Claude to play Battle for Moscow.
+
+1. **Configure the MCP server:**
+   ```bash
+   cp config.example.toml config.toml
+   # Edit config.toml to set API URL and preferences
+   ```
+
+2. **Start the game backend:**
+   ```bash
+   cargo run -p backend
+   ```
+
+3. **In a separate terminal, start the MCP server:**
+   ```bash
+   cargo run -p mcp-player
+   ```
+
+4. **Connect Claude Desktop or another MCP client:**
+   - Add MCP server configuration to your MCP client
+   - Point it to the `mcp-player` binary
+   - The LLM can now play the game using natural language
+
+**Available MCP Tools:**
+- `get_situation` - Get high-level game state overview
+- `get_units` - List units and their positions
+- `get_threats` - Analyze tactical threats
+- `get_valid_moves` - Check where a unit can move
+- `preview_attack` - Calculate attack odds before committing
+- `get_valid_attacks` - List all possible attacks
+- `move_unit` - Move a unit to a new position
+- `declare_attacks` - Declare combat attacks
+- `resolve_next_battle` - Resolve pending battles
+- `use_replacement` - Apply replacement points
+- `end_phase` - Advance to the next phase
+- `get_rules` - Explain game rules and mechanics
 
 ## Game Features
 
@@ -177,17 +237,31 @@ Each turn consists of 8 phases:
 
 ### Building
 ```bash
-cargo build
+# Build all crates
+cargo build --all
+
+# Build specific crate
+cargo build -p backend
+cargo build -p mcp-player
 ```
 
 ### Testing
 ```bash
-cargo test
+# Test all crates
+cargo test --all
+
+# Test specific crate
+cargo test -p backend
+cargo test -p mcp-player
 ```
 
 ### Running
 ```bash
-cargo run
+# Run the web server
+cargo run -p backend
+
+# Run the MCP server
+cargo run -p mcp-player
 ```
 
 ## Credits

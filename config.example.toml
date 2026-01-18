@@ -1,0 +1,16 @@
+# Battle for Moscow MCP Player Configuration
+
+[game]
+# URL of the Battle for Moscow game server API
+api_url = "http://localhost:3000/api"
+
+[player]
+# Which side to play: "german", "soviet", or "both"
+side = "both"
+
+[display]
+# Coordinate format: "axial" or "original"
+coordinate_format = "axial"
+
+# Verbosity level: "brief", "normal", or "detailed"
+verbosity = "normal"
