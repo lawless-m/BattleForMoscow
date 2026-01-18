@@ -44,6 +44,19 @@ function createHexElement(q, r, terrain, options = {}) {
     path.setAttribute('class', `hex hex-${terrain}`);
     g.appendChild(path);
 
+    // Add terrain pattern/icon
+    addTerrainPattern(g, x, y, terrain);
+
+    // Add coordinate label
+    if (options.showCoords !== false) {
+        const coordText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        coordText.setAttribute('x', x);
+        coordText.setAttribute('y', y + HEX_SIZE - 5);
+        coordText.setAttribute('class', 'hex-coord');
+        coordText.textContent = `${q},${r}`;
+        g.appendChild(coordText);
+    }
+
     // Add city marker if present
     if (options.city) {
         const cityCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -75,44 +88,139 @@ function createHexElement(q, r, terrain, options = {}) {
 }
 
 /**
+ * Add terrain-specific visual patterns
+ */
+function addTerrainPattern(group, x, y, terrain) {
+    switch(terrain) {
+        case 'forest':
+            // Add tree symbols
+            for (let i = 0; i < 3; i++) {
+                const offsetX = (i - 1) * 8;
+                const offsetY = (i % 2) * 6 - 3;
+                const tree = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                tree.setAttribute('points', `${x + offsetX},${y - 5 + offsetY} ${x + offsetX - 3},${y + 2 + offsetY} ${x + offsetX + 3},${y + 2 + offsetY}`);
+                tree.setAttribute('fill', '#1a3010');
+                tree.setAttribute('opacity', '0.6');
+                group.appendChild(tree);
+            }
+            break;
+        case 'mountain':
+            // Add mountain triangles
+            const mountain = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            mountain.setAttribute('points', `${x},${y - 8} ${x - 8},${y + 4} ${x + 8},${y + 4}`);
+            mountain.setAttribute('fill', '#5d4e37');
+            mountain.setAttribute('opacity', '0.7');
+            group.appendChild(mountain);
+            break;
+        case 'swamp':
+            // Add wavy lines for swamp
+            for (let i = -1; i <= 1; i++) {
+                const wave = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                wave.setAttribute('d', `M ${x - 10},${y + i * 6} Q ${x - 5},${y + i * 6 - 2} ${x},${y + i * 6} Q ${x + 5},${y + i * 6 + 2} ${x + 10},${y + i * 6}`);
+                wave.setAttribute('stroke', '#4a5f42');
+                wave.setAttribute('stroke-width', '1');
+                wave.setAttribute('fill', 'none');
+                wave.setAttribute('opacity', '0.5');
+                group.appendChild(wave);
+            }
+            break;
+    }
+}
+
+/**
  * Create a unit counter SVG element
  */
 function createUnitElement(q, r, unit, unitDef) {
     const { x, y } = axialToPixel(q, r);
 
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    g.setAttribute('class', 'unit-group');
+    g.setAttribute('class', 'unit-group unit-counter');
     g.setAttribute('data-unit-id', unit.id);
 
-    // Unit counter (rectangle)
+    // Unit counter (rectangle with border)
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    rect.setAttribute('x', x - 15);
-    rect.setAttribute('y', y - 10);
-    rect.setAttribute('width', 30);
-    rect.setAttribute('height', 20);
+    rect.setAttribute('x', x - 18);
+    rect.setAttribute('y', y - 12);
+    rect.setAttribute('width', 36);
+    rect.setAttribute('height', 24);
     rect.setAttribute('rx', 3);
     rect.setAttribute('class', `unit unit-${unitDef.side}`);
     g.appendChild(rect);
 
-    // Unit ID text
+    // Unit type indicator (small icon at top)
+    const typeIcon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    typeIcon.setAttribute('x', x);
+    typeIcon.setAttribute('y', y - 18);
+    typeIcon.setAttribute('class', 'unit-type-icon');
+    typeIcon.setAttribute('font-size', '8');
+    typeIcon.textContent = getUnitTypeIcon(unitDef.type);
+    g.appendChild(typeIcon);
+
+    // Unit ID text (centered)
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     text.setAttribute('x', x);
-    text.setAttribute('y', y + 5);
+    text.setAttribute('y', y + 4);
     text.setAttribute('class', 'unit-text');
+    text.setAttribute('font-size', '11');
     text.textContent = unit.id;
     g.appendChild(text);
 
-    // Strength indicator
+    // Strength indicator (larger, at bottom)
     const strength = unitDef[unit.strength === 'full' ? 'full_strength' : 'half_strength'];
     const strengthText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     strengthText.setAttribute('x', x);
-    strengthText.setAttribute('y', y - 15);
+    strengthText.setAttribute('y', y + 20);
     strengthText.setAttribute('class', 'unit-text');
-    strengthText.setAttribute('font-size', '10');
+    strengthText.setAttribute('font-size', '9');
+    strengthText.setAttribute('font-weight', 'bold');
     strengthText.textContent = strength;
     g.appendChild(strengthText);
 
+    // Movement pips
+    addMovementPips(g, x - 16, y - 10, unitDef.movement);
+
+    // Strength indicator pips (show if reduced)
+    if (unit.strength === 'half') {
+        const halfCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        halfCircle.setAttribute('cx', x + 14);
+        halfCircle.setAttribute('cy', y - 9);
+        halfCircle.setAttribute('r', 3);
+        halfCircle.setAttribute('class', 'unit-strength-pip');
+        halfCircle.setAttribute('opacity', '0.7');
+        g.appendChild(halfCircle);
+    }
+
     return g;
+}
+
+/**
+ * Get a symbol representing unit type
+ */
+function getUnitTypeIcon(type) {
+    const icons = {
+        'infantry': '⚔',
+        'armor': '▮',
+        'cavalry': '🐴',
+        'motorized': '⚙',
+        'artillery': '💣',
+        'airborne': '✈'
+    };
+    return icons[type] || '●';
+}
+
+/**
+ * Add movement capability indicator pips
+ */
+function addMovementPips(group, x, y, movement) {
+    const pipCount = Math.min(movement, 3);
+    for (let i = 0; i < pipCount; i++) {
+        const pip = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pip.setAttribute('cx', x + (i * 4));
+        pip.setAttribute('cy', y);
+        pip.setAttribute('r', 1.5);
+        pip.setAttribute('class', 'unit-movement-pip');
+        group.appendChild(pip);
+    }
 }
 
 /**
